@@ -12,7 +12,6 @@ export default function ChatBox({ phone }) {
   const [successTokens, setSuccessTokens] = useState([]);
   const [failureTokens, setFailureTokens] = useState([]);
 
-  // ================= SEND CHAT MESSAGE =================
   const send = async () => {
     if (!input.trim()) return;
 
@@ -74,7 +73,6 @@ export default function ChatBox({ phone }) {
     }
   };
 
-  // ================= UI =================
   return (
     <div className="main-layout">
       {/* LEFT : FEATURE PHONE */}

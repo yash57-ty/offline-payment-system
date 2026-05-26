@@ -48,6 +48,7 @@ public class ChatService {
                             "Please try again after 24 hours."
             );
         }
+
         UserSession session = userSessionRepo
                 .findById(chat.getPhone())
                 .orElse(null);
@@ -69,7 +70,6 @@ public class ChatService {
 
 
         if (!Boolean.TRUE.equals(session.getCaptchaVerified())) {
-
             if (chat.getMessage().equals(session.getCaptchaCode())) {
                 session.setCaptchaVerified(true);
                 session.setCaptchaCode(null);
@@ -90,11 +90,9 @@ public class ChatService {
         if ("1".equals(option)) {
             return registerService.Register(session, chat);
         }
-
         if ("2".equals(option)) {
             return walletService.transaction(session, chat);
         }
-
         if ("3".equals(option)) {
             return topupService.topUp(session, chat);
         }
@@ -106,6 +104,7 @@ public class ChatService {
         if ("5".equals(option)) {
            return checkBalanceService.handel(session, chat);
         }
+
         userSessionRepo.delete(session);
         return new ChatResponse("verdict");
     }

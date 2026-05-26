@@ -44,7 +44,10 @@ public class RegisterService {
                 chatResponse.setReply(
                         "Debit card not found or KYC not completed.\n" +
                                 "Send any message bank to restart."
+
                 );
+
+
                 userSessionRepo.delete(userSession);
                 return chatResponse;
             }
@@ -77,7 +80,6 @@ public class RegisterService {
             return chatResponse;
         }
 
-        /* STEP 4: Set Wallet PIN */
         if ("SET_PIN".equals(userSession.getCurrent_status())) {
 
             userSession.setMessage(chat.getMessage());

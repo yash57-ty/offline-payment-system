@@ -110,11 +110,12 @@ public class TopupService {
             dto.setPhoneNo(chat.getPhone());
             dto.setAmount(amount);
 
-            String jwt = jwtUtil.generateToken("OFFLINE_BACKEND");
-
+            String jwt = jwtUtil.generateToken(dto.getPhoneNo(),dto.getAmount());
+            dto.setJwtToken(jwt);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + jwt);
+
 
             HttpEntity<BankTopupDTO> entity = new HttpEntity<>(dto, headers);
 
@@ -131,7 +132,6 @@ public class TopupService {
                 return response;
             }
 
-            /* ---------- CREDIT WALLET ---------- */
             wallet.setBalance(wallet.getBalance() + amount);
             walletRepo.save(wallet);
 

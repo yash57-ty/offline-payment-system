@@ -48,7 +48,6 @@ public class CheckBalanceService {
             userSessionRepo.delete(userSession);
             return chatResponse;
         }
-
         chatResponse.setReply("Something went wrong. Please try again.");
         userSessionRepo.delete(userSession);
         return chatResponse;

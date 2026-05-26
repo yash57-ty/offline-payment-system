@@ -75,11 +75,8 @@ public class WalletSyncService {
 
             PaymentToken token =
                     tokenRepo.findById(res.getTokenId()).orElse(null);
-
             if (token == null) continue;
-
             if ("FAILED".equals(res.getStatus())) {
-
                 Wallet sender =
                         walletRepo.findByphonenumber(token.getSenderMobile());
                 sender.setBalance(sender.getBalance() + token.getAmount());

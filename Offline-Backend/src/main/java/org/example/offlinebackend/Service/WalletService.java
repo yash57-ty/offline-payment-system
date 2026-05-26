@@ -27,6 +27,7 @@ public class WalletService {
             session.setPin_attempts(0);
         }
 
+
         Wallet sender=walletRepo.findByphonenumber(chat.getPhone());
         if(sender==null){
             response.setReply("first you register and again restart type bank");
@@ -72,40 +73,6 @@ public class WalletService {
             return response;
         }
 
-//        if ("SET_PIN".equals(session.getCurrent_status())) {
-//
-//            if (!sender.getPin().equals(chat.getMessage())) {
-//
-//                if (session.getPin_attempts() == 2) {
-//                    response.setReply("You are blocked for 24 hours");
-//                    userSessionRepo.delete(session);
-//                    return response;
-//                }
-//
-//                response.setReply("Wrong PIN. 3 wrong attempts will block you");
-//                session.setPin_attempts(session.getPin_attempts() + 1);
-//                userSessionRepo.save(session);
-//                return response;
-//            }
-//
-//            int amount = session.getAmount();
-//            Wallet receiver =
-//                    walletRepo.findByphonenumber(session.getReceiver_mobile());
-//
-//            sender.setBalance(sender.getBalance() - amount);
-//            PaymentToken token = tokenService.generateToken(
-//                    sender,
-//                    receiver.getPhonenumber(),
-//                    amount
-//            );
-//            userSessionRepo.delete(session);
-//            response.setReply(
-//                    "Payment Token: " + token.getTokenId() +
-//                            "\nAmount: " + amount +
-//                            "\nStatus: PENDING"
-//            );
-//            return response;
-//        }
         if ("SET_PIN".equals(session.getCurrent_status())) {
 
 
