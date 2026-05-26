@@ -9,6 +9,8 @@ import org.example.dummybank.Repo.BankUserRepo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Random;
+
 @RestController
 @RequestMapping("/dummy-bank")
 public class DummyController {
@@ -54,9 +56,9 @@ public class DummyController {
                 responses[i] = res;
                 continue;
             }
-
-            boolean flag=false;
-            if(flag==true){
+            Random random = new Random();
+            int  number = random.nextInt(100);
+            if(number%2==0){
                 res.setStatus("SUCCESS");
                 receiver.setBalance(receiver.getBalance() + token.getAmount());
                 bankUserRepo.save(receiver);

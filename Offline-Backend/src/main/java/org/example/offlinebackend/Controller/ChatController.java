@@ -2,6 +2,7 @@ package org.example.offlinebackend.Controller;
 
 import org.example.offlinebackend.Model.*;
 import org.example.offlinebackend.Repo.TokenFailedRepo;
+import org.example.offlinebackend.Repo.TokenRepo;
 import org.example.offlinebackend.Repo.TokenSuccessRepo;
 import org.example.offlinebackend.Service.ChatService;
 import org.example.offlinebackend.Service.WalletSyncService;
@@ -14,6 +15,8 @@ import java.util.List;
 @CrossOrigin(origins="http://localhost:5173")
 public class ChatController {
 
+    @Autowired
+    TokenRepo  tokenRepo;
     @Autowired
     TokenFailedRepo tokenFailedRepo;
     @Autowired
@@ -50,5 +53,14 @@ public class ChatController {
         return tokenFailedRepo.findBySenderMobile(phoneNo);
     }
 
+    @GetMapping("/token/pending/sent")
+    public List<PaymentToken> tokenPendingsent(@RequestParam String phoneNo) {
+        return tokenRepo.findBySenderMobile(phoneNo);
+    }
+
+    @GetMapping("/token/pending/received")
+    public List<PaymentToken> tokenPendingReceived(@RequestParam String phoneNo) {
+        return tokenRepo.findByReceiverMobile(phoneNo);
+    }
 
 }

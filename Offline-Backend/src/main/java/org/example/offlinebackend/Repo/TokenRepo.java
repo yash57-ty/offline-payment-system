@@ -8,5 +8,8 @@ import java.util.List;
 
 @Repository
 public interface TokenRepo extends JpaRepository<PaymentToken, String> {
+
     List<PaymentToken> findBySenderMobile(String phoneNo);
+
+    List<PaymentToken> findByReceiverMobile(String receiverMobile);
 }

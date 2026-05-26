@@ -84,7 +84,6 @@ public class TopupService {
             return response;
         }
 
-        /* ---------- STEP 3: RECEIVE AMOUNT ---------- */
         if ("TOPUP_AMOUNT".equals(session.getCurrent_status())) {
 
             int amount;

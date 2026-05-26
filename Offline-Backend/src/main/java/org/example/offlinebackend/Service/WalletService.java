@@ -89,44 +89,31 @@ public class WalletService {
                             LocalDateTime.now().plusHours(24)
                     );
                     walletRepo.save(sender);
-
                     userSessionRepo.delete(session);
-
                     response.setReply(
                             "❌ Wrong PIN entered 3 times.\n" +
                                     "You are blocked for 24 hours."
                     );
                     return response;
                 }
-
                 walletRepo.save(sender);
-
                 response.setReply(
                         "Wrong PIN. Attempts left: " +
                                 (3 - sender.getPinAttempts())
                 );
                 return response;
             }
-
             sender.setPinAttempts(0);
             sender.setPinBlockedUntil(null);
-
             int amount = session.getAmount();
-            Wallet receiver =
-                    walletRepo.findByphonenumber(session.getReceiver_mobile());
-
             sender.setBalance(sender.getBalance() - amount);
-
             walletRepo.save(sender);
-
             PaymentToken token = tokenService.generateToken(
                     sender,
-                    receiver.getPhonenumber(),
+                    session.getReceiver_mobile(),
                     amount
             );
-
             userSessionRepo.delete(session);
-
             response.setReply(
                     "Payment Token: " + token.getTokenId()+
                             "\nAmount: " + amount +
