@@ -1,6 +1,7 @@
 package org.example.dummybank;
 
 import io.jsonwebtoken.Claims;
+import org.example.dummybank.Model.BankBalanceRes;
 import org.example.dummybank.Model.BankTopupDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -70,53 +71,74 @@ public class DummyController {
         return org.springframework.http.ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/topup")
-    public ResponseEntity<?> topup(
+    @PostMapping("/checkbalance")
+    public ResponseEntity<?> checkBalance(
 
-            @RequestBody BankTopupDTO dto
-
+            @RequestHeader("Authorization")
+            String authHeader
     ){
 
         try {
 
+            String jwt =
+                    authHeader.substring(7);
             Claims claims =
+                    jwtUtil.validateAndExtract(jwt);
+            String phone =
+                    claims.getSubject();
+            BankUser user =
+                    bankUserRepo
+                            .findById(phone)
+                            .orElse(null);
+            if(user == null) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("USER NOT FOUND");
+            }
+            BankBalanceRes res =
+                    new BankBalanceRes();
+            res.setPhone(phone);
 
+            res.setAmount(
+                    user.getBalance()
+            );
+            return ResponseEntity.ok(res);
+        } catch (Exception e){
+            return ResponseEntity
+                    .status(401)
+                    .body("INVALID TOKEN");
+        }
+    }
+    @PostMapping("/topup")
+    public ResponseEntity<?> topup(
+            @RequestBody BankTopupDTO dto
+    ){
+        try {
+            Claims claims =
                     jwtUtil.validateAndExtract(
                             dto.getJwtToken()
                     );
-
             String phone =
-
                     claims.getSubject();
-
             Integer amount =
-
                     claims.get(
                             "amount",
                             Integer.class
                     );
-
             BankUser user =
-
                     bankUserRepo
                             .findById(phone)
                             .orElse(null);
-
             if(user == null){
-
                 return ResponseEntity
                         .badRequest()
                         .body("User not found");
             }
-
             user.setBalance(
                     user.getBalance() - amount
             );
-
             bankUserRepo.save(user);
-
             return ResponseEntity.ok("SUCCESS");
-
         } catch (Exception e){
 
             return ResponseEntity

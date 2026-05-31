@@ -18,7 +18,7 @@ import java.util.Map;
 @Service
 public class TopupService {
 
-    private static final int MAX_TOPUP_AMOUNT = 100000;
+    private static final int MAX_TOPUP_AMOUNT = 5000;
 
     @Autowired
     private WalletRepo walletRepo;
@@ -37,12 +37,12 @@ public class TopupService {
         ChatResponse response = new ChatResponse();
 
         if (chat == null || chat.getPhone() == null) {
-            response.setReply(" Invalid request.");
+            response.setReply("verdict Invalid request.");
             return response;
         }
 
         if (session == null) {
-            response.setReply(" Session expired. Please try again.");
+            response.setReply("verdict Session expired.Please try again.");
             return response;
         }
 
@@ -51,14 +51,14 @@ public class TopupService {
 
         if (wallet == null) {
             userSessionRepo.delete(session);
-            response.setReply("Wallet not found.");
+            response.setReply("verdict Wallet not found.");
             return response;
         }
 
         if (wallet.getStatus() != null &&
                 !"ACTIVE".equalsIgnoreCase(wallet.getStatus())) {
             userSessionRepo.delete(session);
-            response.setReply(" Wallet is not active.");
+            response.setReply("verdict Wallet is not active.");
             return response;
         }
 
@@ -74,7 +74,7 @@ public class TopupService {
 
             if (!wallet.getPin().equals(msg)) {
                 userSessionRepo.delete(session);
-                response.setReply("❌ Wrong PIN. Top-up cancelled.");
+                response.setReply("verdict ❌ Wrong PIN. Top-up cancelled.");
                 return response;
             }
 
@@ -93,7 +93,6 @@ public class TopupService {
                 response.setReply("❌ Invalid amount. Enter numbers only:");
                 return response;
             }
-
             if (amount <= 0) {
                 response.setReply("❌ Amount must be greater than 0.");
                 return response;
@@ -141,7 +140,7 @@ public class TopupService {
 
         /* ---------- FALLBACK ---------- */
         userSessionRepo.delete(session);
-        response.setReply("⚠️ Something went wrong. Please try again.");
+        response.setReply("verdict Something went wrong. Please try again.");
         return response;
     }
 }

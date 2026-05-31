@@ -11,7 +11,6 @@ export default function Login({ onLogin }) {
 
         <div className="login-screen">
           <div className="login-text">Enter Mobile Number</div>
-
           <input
             placeholder="XXXXXXXXXX"
             value={phone}

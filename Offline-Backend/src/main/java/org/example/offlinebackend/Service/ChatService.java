@@ -76,7 +76,8 @@ public class ChatService {
                 userSessionRepo.save(session);
                 return new ChatResponse(getMainMenu());
             } else {
-                return new ChatResponse("Wrong number. Try again:");
+                userSessionRepo.delete(session);
+                return new ChatResponse("verdict Wrong number. Try again:");
             }
         }
 
@@ -106,7 +107,7 @@ public class ChatService {
         }
 
         userSessionRepo.delete(session);
-        return new ChatResponse("verdict");
+        return new ChatResponse("verdict:choose correct option");
     }
     private String getMainMenu() {
         return "Welcome to Offline Wallet Service\n" +

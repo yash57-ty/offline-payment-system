@@ -30,7 +30,7 @@ public class WalletService {
 
         Wallet sender=walletRepo.findByphonenumber(chat.getPhone());
         if(sender==null){
-            response.setReply("first you register and again restart type bank");
+            response.setReply("verdict first you register.");
             userSessionRepo.delete(session);
             return response;
         }
@@ -51,7 +51,7 @@ public class WalletService {
                 return response;
             }
             if (sender.getBalance() < amount) {
-                response.setReply("Insufficient Balance"+"\n"+"your current balance:"+sender.getBalance() +"you again type bank to restart");
+                response.setReply("verdict Insufficient Balance"+"\n"+"your current balance:"+sender.getBalance() +"you again type bank to restart");
                 userSessionRepo.delete(session);
                 return response;
             }
@@ -91,7 +91,7 @@ public class WalletService {
                     walletRepo.save(sender);
                     userSessionRepo.delete(session);
                     response.setReply(
-                            "❌ Wrong PIN entered 3 times.\n" +
+                            "verdict ❌ Wrong PIN entered 3 times.\n" +
                                     "You are blocked for 24 hours."
                     );
                     return response;
@@ -115,7 +115,7 @@ public class WalletService {
             );
             userSessionRepo.delete(session);
             response.setReply(
-                    "Payment Token: " + token.getTokenId()+
+                    "verdict Payment Token: " + token.getTokenId()+
                             "\nAmount: " + amount +
                             "\nStatus: CREATED"
             );

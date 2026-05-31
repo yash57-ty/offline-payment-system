@@ -16,7 +16,6 @@ public class ResetPin {
 
     @Autowired
     private UserSessionRepo userSessionRepo;
-
     @Autowired
     private WalletRepo walletRepo;
 
@@ -26,7 +25,7 @@ public class ResetPin {
 
         Wallet wallet = walletRepo.findByphonenumber(chat.getPhone());
         if (wallet == null) {
-            chatResponse.setReply("❌ Wallet not found. Please register first.");
+            chatResponse.setReply("verdict ❌ Wallet not found. Please register first.");
             userSessionRepo.delete(userSession);
             return chatResponse;
         }
@@ -62,7 +61,8 @@ public class ResetPin {
         if ("FORGOT_OTP".equals(userSession.getCurrent_status())) {
 
             if (!userSession.getMessage().equals(chat.getMessage())) {
-                chatResponse.setReply("❌ Invalid OTP. Try again:");
+                chatResponse.setReply("verdict ❌ Invalid OTP. Try again:");
+                userSessionRepo.delete(userSession);
                 return chatResponse;
             }
 
@@ -114,7 +114,8 @@ public class ResetPin {
         if ("CHANGE_OLD_PIN".equals(userSession.getCurrent_status())) {
 
             if (!wallet.getPin().equals(chat.getMessage())) {
-                chatResponse.setReply("❌ Incorrect Old PIN. Try again:");
+                chatResponse.setReply("verdict ❌ Incorrect Old PIN. Try again:");
+                userSessionRepo.delete(userSession);
                 return chatResponse;
             }
 
@@ -146,14 +147,12 @@ public class ResetPin {
 
             wallet.setPin(chat.getMessage());
             walletRepo.save(wallet);
-
             userSessionRepo.delete(userSession);
-
-            chatResponse.setReply("✅ PIN changed successfully.");
+            chatResponse.setReply("verdict ✅ PIN changed successfully.");
             return chatResponse;
         }
 
-        chatResponse.setReply("Something went wrong. Please try again.");
+        chatResponse.setReply("verdict Something went wrong. Please try again.");
         return chatResponse;
     }
 }

@@ -1,358 +1,194 @@
-/* =========================
-   RESET & BASE
-========================= */
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+/* ChatBox.css */
 
-/* =========================
-   MAIN LAYOUT
-========================= */
+/* ── Layout ── */
 .main-layout {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 48px;
-    padding: 48px 64px;
-    background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, #003b2f 0%, #000d08 60%, #000 100%);
-    font-family: 'Courier New', Courier, monospace;
-    overflow-x: hidden;
+  display: flex;
+  gap: 32px;
+  padding: 24px;
+  min-height: 100vh;
+  background: #0f0f0f;
+  font-family: "Courier New", monospace;
+  color: #e0e0e0;
+  align-items: flex-start;
 }
 
-/* =========================
-   PHONE CONTAINER
-========================= */
+/* ── Phone shell ── */
 .phone-container {
-    width: 340px;
-    min-width: 340px;
-    height: 720px;
-    background: #0a0a0a;
-    border-radius: 44px;
-    padding: 16px;
-    border: 1.5px solid rgba(0, 255, 160, 0.18);
-    box-shadow:
-        0 0 0 1px rgba(0, 255, 160, 0.06),
-        0 0 40px rgba(0, 255, 160, 0.12),
-        0 24px 60px rgba(0, 0, 0, 0.7),
-        inset 0 1px 0 rgba(255,255,255,0.04);
-    display: flex;
-    flex-direction: column;
-    position: sticky;
-    top: 48px;
+  width: 280px;
+  flex-shrink: 0;
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-/* =========================
-   PHONE HEADER (notch bar)
-========================= */
 .phone-header {
-    height: 22px;
-    margin-bottom: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 36px;
+  background: #111;
+  border-bottom: 1px solid #2a2a2a;
 }
 
-.phone-header::after {
-    content: '';
-    width: 88px;
-    height: 5px;
-    background: rgba(255,255,255,0.12);
-    border-radius: 100px;
-}
-
-/* =========================
-   PHONE SCREEN
-========================= */
 .phone-screen {
-    flex: 1;
-    background: #e8fef0;
-    border-radius: 28px;
-    padding: 18px 16px;
-    overflow-y: auto;
-    color: #0d2b14;
-    font-size: 14px;
-    line-height: 1.75;
-    margin-bottom: 12px;
-    border: 1px solid rgba(0, 200, 100, 0.15);
+  flex: 1;
+  min-height: 400px;
+  max-height: 520px;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #0a0a0a;
 }
 
-/* =========================
-   MESSAGES
-========================= */
 .msg-bot {
-    margin-bottom: 12px;
-    color: #1a3d22;
-    white-space: pre-wrap;
-    font-size: 13.5px;
-    padding: 2px 0;
-}
-
-.msg-bot::before {
-    content: '▶ ';
-    color: #00a855;
-    font-size: 10px;
-    vertical-align: middle;
+  background: #1e1e1e;
+  border-left: 3px solid #2ea84a;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  white-space: pre-wrap;
 }
 
 .msg-user {
-    margin-bottom: 12px;
-    margin-left: auto;
-    width: fit-content;
-    max-width: 82%;
-    background: linear-gradient(135deg, #00a855, #006e38);
-    color: #e8fff2;
-    padding: 8px 14px;
-    border-radius: 18px 18px 4px 18px;
-    font-size: 13.5px;
-    white-space: pre-wrap;
-    box-shadow: 0 2px 8px rgba(0, 160, 80, 0.25);
+  background: #1a2030;
+  border-left: 3px solid #3a7bd5;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  align-self: flex-end;
+  text-align: right;
 }
 
-/* =========================
-   INPUT AREA
-========================= */
 .phone-input {
-    display: flex;
-    gap: 8px;
-    padding-top: 4px;
+  display: flex;
+  border-top: 1px solid #2a2a2a;
+  background: #111;
 }
 
 .phone-input input {
-    flex: 1;
-    height: 44px;
-    border: 1px solid rgba(0, 255, 140, 0.15);
-    outline: none;
-    border-radius: 14px;
-    padding: 0 14px;
-    background: #111;
-    color: #e0ffe8;
-    font-size: 13px;
-    font-family: inherit;
-    transition: border-color 0.2s;
-}
-
-.phone-input input::placeholder {
-    color: rgba(255,255,255,0.25);
-}
-
-.phone-input input:focus {
-    border-color: rgba(0, 255, 140, 0.4);
-    background: #141414;
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e0e0e0;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  outline: none;
 }
 
 .phone-input button {
-    width: 68px;
-    height: 44px;
-    border: none;
-    border-radius: 14px;
-    background: #00c45c;
-    color: #001a0c;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.18s, transform 0.1s;
-    font-family: inherit;
-    letter-spacing: 0.02em;
+  padding: 10px 16px;
+  background: #2ea84a;
+  border: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .phone-input button:hover {
-    background: #00e86a;
+  background: #27923f;
 }
 
-.phone-input button:active {
-    transform: scale(0.96);
-}
-
-/* =========================
-   RIGHT PANEL
-========================= */
+/* ── Right panel ── */
 .right-panel {
-    flex: 1;
-    max-width: 760px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-content: start;
-    padding-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 200px;
 }
 
-/* =========================
-   STATUS BUTTON
-========================= */
+/* Status button */
 .status-btn {
-    grid-column: span 2;
-    height: 60px;
-    border: none;
-    border-radius: 18px;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: transform 0.15s, opacity 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.status-btn:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
-}
-
-.status-btn:active {
-    transform: scale(0.98);
+  padding: 10px 20px;
+  border: 2px solid;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .status-btn.online {
-    background: #00e87a;
-    color: #002210;
-    box-shadow: 0 4px 24px rgba(0, 232, 122, 0.3);
+  border-color: #2ea84a;
+  background: #0d2b14;
+  color: #2ea84a;
 }
 
 .status-btn.offline {
-    background: #ff3d5c;
-    color: #fff;
-    box-shadow: 0 4px 24px rgba(255, 61, 92, 0.3);
+  border-color: #c0392b;
+  background: #2a0d0d;
+  color: #c0392b;
 }
 
-/* =========================
-   TOKEN BOX
-========================= */
-.token-box {
-    background: #080808;
-    border-radius: 22px;
-    padding: 20px;
-    min-height: 260px;
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    transition: border-color 0.2s;
+/* View Tokens button */
+.view-tokens-btn {
+  position: relative;
+  padding: 10px 20px;
+  background: #1e2a40;
+  border: 2px solid #3a7bd5;
+  border-radius: 6px;
+  color: #7baff5;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.token-box:hover {
-    border-color: rgba(255, 255, 255, 0.1);
+.view-tokens-btn:hover {
+  background: #253650;
+  color: #a0c4ff;
 }
 
-/* =========================
-   TOKEN HEADINGS
-========================= */
-.token-box h3 {
-    margin-bottom: 16px;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    line-height: 1.4;
+/* Pending badge */
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #d4ac0d;
+  color: #111;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* =========================
-   TOKEN CARD
-========================= */
-.token-item {
-    background: #101010;
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-    line-height: 1.85;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    color: #d4d4d4;
-    font-size: 13px;
-    transition: border-color 0.15s;
+/* Pending summary card */
+.pending-summary {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-left: 3px solid #d4ac0d;
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.logout-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #aaa;
 }
 
-.token-item:hover {
-    border-color: rgba(255, 255, 255, 0.12);
-}
-
-.token-item:last-child {
-    margin-bottom: 0;
-}
-
-/* =========================
-   SUCCESS
-========================= */
-.success {
-    border-left: 3px solid #00e87a;
-    border-color: rgba(0, 232, 122, 0.35);
-    background: #090f0b;
-}
-
-/* =========================
-   FAILURE
-========================= */
-.failure {
-    border-left: 3px solid #ff3d5c;
-    border-color: rgba(255, 61, 92, 0.35);
-    background: #0f0808;
-}
-
-/* =========================
-   PENDING
-========================= */
-.pending {
-    border-left: 3px solid #f5c842;
-    border-color: rgba(245, 200, 66, 0.35);
-    background: #0e0c06;
-}
-
-/* =========================
-   EMPTY STATE TEXT
-========================= */
-.empty-state {
-    color: rgba(255, 255, 255, 0.2);
-    font-size: 13px;
-    margin-top: 8px;
-    font-style: italic;
-}
-
-/* =========================
-   SCROLLBAR
-========================= */
-::-webkit-scrollbar {
-    width: 4px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.22);
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 900px) {
-    .main-layout {
-        flex-direction: column;
-        align-items: center;
-        padding: 24px 20px;
-        gap: 28px;
-    }
-
-    .phone-container {
-        position: static;
-        min-width: unset;
-        width: 100%;
-        max-width: 360px;
-    }
-
-    .right-panel {
-        width: 100%;
-        max-width: 100%;
-    }
+.summary-row .count {
+  font-weight: bold;
+  color: #d4ac0d;
 }

@@ -1,444 +1,157 @@
-import { useEffect, useState } from "react";
-import { sendMessage } from "./api";
+import { useEffect, useState ,useRef} from "react";
+import { sendMessage, syncUser } from "../api";
+import TokensPage from "./TokensPage";
 import "./ChatBox.css";
 
-export default function ChatBox({ phone }) {
+export default function ChatBox({ phone,setphone }) {
+  let intialized=useRef(false);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [online, setOnline] = useState(false);
+  const [showTokens, setShowTokens] = useState(false);
+  const [pendingSentCount, setPendingSentCount] = useState(0);
+  const [pendingReceivedCount, setPendingReceivedCount] = useState(0);
+  const [btn,setbtn]=useState(true)
+  
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const [sentRes, recRes] = await Promise.all([
+          fetch(`http://localhost:8080/token/pending/sent?phoneNo=${phone}`),
+          fetch(`http://localhost:8080/token/pending/received?phoneNo=${phone}`),
+        ]);
+        const sentData = await sentRes.json();
+        const recData = await recRes.json();
+        setPendingSentCount((sentData || []).length);
+        setPendingReceivedCount((recData || []).length);
+      } catch { 
 
-  const [messages, setMessages] = useState([
-    {
-      from: "bot",
-      text: "Welcome!\nType: Bank Transaction"
-    }
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [phone]);
+
+  const addMessage = (from,type,text) => setMessages(prev => [
+    ...prev,
+    { from, type, text }
   ]);
   
-  const [input, setInput] = useState("");
-
-  const [online, setOnline] = useState(false);
-
-  const [successTokens, setSuccessTokens] = useState([]);
-
-  const [failureTokens, setFailureTokens] = useState([]);
-
-  // SENDER PENDING
-  const [pendingSentTokens, setPendingSentTokens] = useState([]);
-
-  // RECEIVER PENDING
-  const [pendingReceivedTokens, setPendingReceivedTokens] = useState([]);
-
-  // =========================================
-  // SEND MESSAGE
-  // =========================================
-  useEffect(() => {
-  const interval = setInterval( async () => {
-    const pendingSentRes = await fetch(
-          `http://localhost:8080/token/pending/sent?phoneNo=${phone}`
-        );
-        const pendingSentData =
-          await pendingSentRes.json();
-        setPendingSentTokens(
-          pendingSentData || []
-        );
-        const pendingReceivedRes = await fetch(
-          `http://localhost:8080/token/pending/received?phoneNo=${phone}`
-        );
-        const pendingReceivedData =
-          await pendingReceivedRes.json();
-        setPendingReceivedTokens(
-          pendingReceivedData || []
-        );
-  }, 4000);
-
-  return () => clearInterval(interval); // cleanup on unmount
-}, []);
-
+  useEffect(()=>{
+    if(intialized.current) return
+    intialized.current=true
+    addMessage("bot", "button","start" )
+  },[])
 
   const send = async () => {
-
     if (!input.trim()) return;
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        from: "user",
-        text: input
-      }
-    ]);
-
+    addMessage("user","msg" ,input);
     try {
-
-      const res = await sendMessage(
-        phone,
-        input
-      );
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          from: "bot",
-          text: res.reply
-        }
-      ]);
-
+      const res = await sendMessage(phone, input);
+      if(res.reply.startsWith("verdict")){
+        addMessage("user","button", res.reply.substring(7));
+      }else{
+        addMessage("bot", "msg",res.reply);
+      }
     } catch {
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          from: "bot",
-          text: "❌ Server error"
-        }
-      ]);
+      addMessage("bot", "msg","❌ Server error");
     }
-
     setInput("");
   };
-
-  // =========================================
-  // SYNC
-  // =========================================
-
   const toggleSync = async () => {
-
     const newState = !online;
-
     setOnline(newState);
-
     if (newState) {
-
       try {
-
-        // =====================================
-        // SYNC API
-        // =====================================
-
-        await fetch(
-          "http://localhost:8080/user/sync",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-              phoneNo: phone
-            })
-          }
-        );
-
-        // =====================================
-        // SUCCESS TOKENS
-        // =====================================
-
-        const successRes = await fetch(
-          `http://localhost:8080/token/success?phoneNo=${phone}`
-        );
-
-        const successData =
-          await successRes.json();
-
-        setSuccessTokens(successData || []);
-
-        // =====================================
-        // FAILURE TOKENS
-        // =====================================
-
-        const failRes = await fetch(
-          `http://localhost:8080/token/failure?phoneNo=${phone}`
-        );
-
-        const failData =
-          await failRes.json();
-
-        setFailureTokens(failData || []);
-
-        setMessages((prev) => [
-          ...prev,
-          {
-            from: "bot",
-            text: "✔ Wallet synced successfully"
-          }
-        ]);
-
-      } catch (err) {
-
-        console.error(err);
-
-        setMessages((prev) => [
-          ...prev,
-          {
-            from: "bot",
-            text: "❌ Sync failed"
-          }
-        ]);
-
+        await syncUser(phone);
+        addMessage("bot", "msg","✔ Wallet synced successfully");
+      } catch {
+        addMessage("bot","msg" ,"❌ Sync failed");
         setOnline(false);
       }
     }
   };
-
+  if (showTokens) {
+    return <TokensPage phone={phone} onBack={() => setShowTokens(false)} />;
+  }
+  const totalPending = pendingSentCount + pendingReceivedCount;
   return (
-
+    
     <div className="main-layout">
-
-      {/* ===================================== */}
-      {/* PHONE */}
-      {/* ===================================== */}
-
       <div className="phone-container">
-
         <div className="phone-header"></div>
-
         <div className="phone-screen">
-
-          {
-            messages.map((m, i) => (
-
-              <div
-                key={i}
-                className={
-                  m.from === "bot"
-                    ? "msg-bot"
-                    : "msg-user"
-                }
-              >
-
-                {
-                  m.from === "bot"
-                    ? "▶ "
-                    : "◀ "
-                }
-
-                {m.text}
-
-              </div>
-            ))
-          }
-
+          {messages.map((m, i) => (
+            <div key={i}
+              className={m.from === "bot"  ? "msg-bot" : "msg-user"}>
+               {m.type === "button" ? (
+                <>
+                  <button onClick={async ()=>{
+                    setbtn(false)
+                     addMessage("user","msg" ,"bank");
+                    try {
+                      const res = await sendMessage(phone, "bank");
+                      addMessage("bot", "msg", res.reply);
+                    } catch {
+                      addMessage("bot", "msg", "❌ Server error");
+                    }
+                  }}>To start chat press here</button>
+                  <p>{m.text}</p>
+                  </>
+                ) : (
+                  <p>{m.from === "bot" ? "▶ " : "◀ "}{m.text}</p>
+                )}
+            </div>
+          ))}
         </div>
-
         <div className="phone-input">
-
           <input
             placeholder="Type reply..."
             value={input}
-            onChange={(e) =>
-              setInput(e.target.value)
-            }
-            onKeyDown={(e) =>
-              e.key === "Enter" && send()
-            }
+            onChange={(e) => setInput(e.target.value)}
+            disabled={btn}
+            onKeyDown={(e) => e.key === "Enter" && send()}
           />
-
-          <button onClick={send}>
-            OK
-          </button>
-
+          <button onClick={send}>OK</button>
         </div>
-
       </div>
-
-      {/* ===================================== */}
-      {/* RIGHT PANEL */}
-      {/* ===================================== */}
-
       <div className="right-panel">
-
-        {/* ================================= */}
-        {/* NETWORK STATUS */}
-        {/* ================================= */}
-
         <button
-          className={`status-btn ${
-            online
-              ? "online"
-              : "offline"
-          }`}
+          className={`status-btn ${online ? "online" : "offline"}`}
           onClick={toggleSync}
         >
-
-          {
-            online
-              ? "🟢 ONLINE"
-              : "🔴 OFFLINE"
-          }
-
+          {online ? "🟢 ONLINE" : "🔴 OFFLINE"}
+        </button>
+        <button
+          className="logout-btn"
+          onClick={()=>{
+            localStorage.removeItem("phone")
+            setphone(null);
+          }}
+        >
+          🚪 Logout
+        </button>
+        <button
+          className="view-tokens-btn"
+          onClick={() => setShowTokens(true)}
+        >
+          📋 View All Tokens
+          {totalPending > 0 && (
+            <span className="badge">{totalPending}</span>
+          )}
         </button>
 
-        {/* ================================= */}
-        {/* SUCCESS TOKENS */}
-        {/* ================================= */}
-
-        <div className="token-box success">
-
-          <h3>✅ Success Tokens</h3>
-
-          {
-            successTokens.length === 0 ? (
-
-              <p>No success tokens</p>
-
-            ) : (
-
-              successTokens.map((t, i) => (
-
-                <div
-                  key={i}
-                  className="token-item"
-                >
-
-                  <div>
-                    <b>Token:</b> {t.tokenId}
-                  </div>
-
-                  <div>
-                    <b>Amount:</b> ₹{t.amount}
-                  </div>
-
-                  <div>
-                    <b>To:</b> {t.receiverMobile}
-                  </div>
-
-                </div>
-              ))
-            )
-          }
-
+        <div className="pending-summary">
+          <div className="summary-row">
+            <span>🟡 Pending Sent</span>
+            <span className="count">{pendingSentCount}</span>
+          </div>
+          <div className="summary-row">
+            <span>🟡 Pending Received</span>
+            <span className="count">{pendingReceivedCount}</span>
+          </div>
         </div>
-
-        {/* ================================= */}
-        {/* FAILED TOKENS */}
-        {/* ================================= */}
-
-        <div className="token-box failure">
-
-          <h3>❌ Failed Tokens</h3>
-
-          {
-            failureTokens.length === 0 ? (
-
-              <p>No failed tokens</p>
-
-            ) : (
-
-              failureTokens.map((t, i) => (
-
-                <div
-                  key={i}
-                  className="token-item"
-                >
-
-                  <div>
-                    <b>Token:</b> {t.tokenId}
-                  </div>
-
-                  <div>
-                    <b>Amount:</b> ₹{t.amount}
-                  </div>
-
-                  <div>
-                    <b>Receiver:</b> {t.receiverMobile}
-                  </div>
-
-                </div>
-              ))
-            )
-          }
-
-        </div>
-
-        {/* ================================= */}
-        {/* PENDING SENT */}
-        {/* ================================= */}
-
-        <div className="token-box pending">
-
-          <h3>🟡 Pending Sent Tokens</h3>
-
-          {
-            pendingSentTokens.length === 0 ? (
-
-              <p>No pending sent tokens</p>
-
-            ) : (
-
-              pendingSentTokens.map((t, i) => (
-
-                <div
-                  key={i}
-                  className="token-item"
-                >
-
-                  <div>
-                    <b>Token:</b> {t.tokenId}
-                  </div>
-
-                  <div>
-                    <b>Amount:</b> ₹{t.amount}
-                  </div>
-
-                  <div>
-                    <b>To:</b> {t.receiverMobile}
-                  </div>
-
-                  <div>
-                    <b>Status:</b> PENDING
-                  </div>
-
-                </div>
-              ))
-            )
-          }
-
-        </div>
-
-        {/* ================================= */}
-        {/* PENDING RECEIVED */}
-        {/* ================================= */}
-
-        <div className="token-box pending">
-
-          <h3>🟡 Pending Received Tokens</h3>
-
-          {
-            pendingReceivedTokens.length === 0 ? (
-
-              <p>No pending received tokens</p>
-
-            ) : (
-
-              pendingReceivedTokens.map((t, i) => (
-
-                <div
-                  key={i}
-                  className="token-item"
-                >
-
-                  <div>
-                    <b>Token:</b> {t.tokenId}
-                  </div>
-
-                  <div>
-                    <b>Amount:</b> ₹{t.amount}
-                  </div>
-
-                  <div>
-                    <b>From:</b> {t.senderMobile}
-                  </div>
-
-                  <div>
-                    <b>Status:</b> PENDING
-                  </div>
-
-                </div>
-              ))
-            )
-          }
-
-        </div>
-
       </div>
-
     </div>
   );
 }

@@ -16,11 +16,10 @@ public class RegisterService {
     @Autowired
     private WalletRepo walletRepo;
     public ChatResponse Register(UserSession userSession, Chat chat) {
-
         ChatResponse chatResponse = new ChatResponse();
         Wallet wallet1 = walletRepo.findByphonenumber(chat.getPhone());
         if(wallet1 != null) {
-                chatResponse.setReply("alreay register");
+                chatResponse.setReply("verdict already register");
                 userSessionRepo.delete(userSession);
                 return chatResponse;
         }
@@ -42,12 +41,8 @@ public class RegisterService {
                     !accInformation.getDebitCard_number().equals(chat.getMessage())) {
 
                 chatResponse.setReply(
-                        "Debit card not found or KYC not completed.\n" +
-                                "Send any message bank to restart."
-
+                        "verdict Debit card not found or KYC not completed"
                 );
-
-
                 userSessionRepo.delete(userSession);
                 return chatResponse;
             }
@@ -68,7 +63,7 @@ public class RegisterService {
                     .orElse(null);
 
             if (!accInformation.getDebitCard_Pin().equals(chat.getMessage())) {
-                chatResponse.setReply("Wrong Debit Card PIN. Try again.");
+                chatResponse.setReply("verdict Wrong Debit Card PIN. Try again.");
                 userSessionRepo.delete(userSession);
                 return chatResponse;
             }
@@ -113,11 +108,11 @@ public class RegisterService {
             wallet.setAccInformation(acc);
             walletRepo.save(wallet);
             userSessionRepo.delete(userSession);
-            chatResponse.setReply("🎉 Registration Successful!\nYour wallet is active.");
+            chatResponse.setReply("verdict 🎉 Registration Successful!\nYour wallet is active.");
             return chatResponse;
         }
-
-        chatResponse.setReply("Something went wrong. Please try again.");
+        chatResponse.setReply("verdict Something went wrong. Please try again");
+        if(userSession!= null)userSessionRepo.delete(userSession);
         return chatResponse;
     }
 }

@@ -4,14 +4,22 @@ import ChatBox from "./components/ChatBox";
 import "./App.css";
 
 export default function App() {
-  const [phone, setPhone] = useState(null);
-
+  const savedPhone = localStorage.getItem("phone");
+  const [phone, setPhone] = useState(
+    savedPhone && savedPhone !== "undefined"
+      ? savedPhone
+      : null
+  )
+  function handelLogin(phone){
+    setPhone(phone)
+    localStorage.setItem("phone",phone)
+  }
   return (
     <div className="app-layout">
       {!phone ? (
-        <Login onLogin={setPhone} />
+        <Login onLogin={handelLogin} />
       ) : (
-        <ChatBox phone={phone} />
+        <ChatBox phone={phone} setphone={setPhone}/>
       )}
     </div>
   );

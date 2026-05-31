@@ -1,88 +1,85 @@
-/* Center whole phone */
+/* Login.css */
+
 .login-wrapper {
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at center, #0f3d2e, #000);
-}
-
-/* PHONE BODY */
-.login-container {
-  width: 340px;
-  height: 420px;
-  background: #000;
-  border-radius: 34px;
-  border: 4px solid #444;
-  padding: 16px;
-  box-shadow: 0 0 40px #00ffcc;
+  min-height: 100vh;
+  background: #0f0f0f;
   font-family: "Courier New", monospace;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
-/* HEADER */
+.login-container {
+  width: 260px;
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .login-top {
+  background: #111;
+  color: #666;
   text-align: center;
-  font-size: 14px;
-  padding: 8px;
-  border-bottom: 1px solid #444;
-  color: #ddd;
+  padding: 12px;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  border-bottom: 1px solid #2a2a2a;
 }
 
-/* SCREEN */
 .login-screen {
-  flex: 1;
-  margin: 16px 0;
-  background: #c9ffd6;
-  color: #0b2e13;
-  border-radius: 10px;
-  padding: 16px;
-  font-size: 15px;
-  text-align: center;
-  box-shadow: inset 0 0 8px #00aa55;
+  padding: 32px 20px 24px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 14px;
+  gap: 16px;
+  background: #0a0a0a;
 }
-
 
 .login-text {
-  font-weight: bold;
-}
-
-/* INPUT */
-.login-screen input {
-  width: 100%;
-  padding: 10px;
-  border: 2px solid #0b2e13;
-  border-radius: 6px;
-  background: #eaffea;
-  color: #0b2e13;
+  color: #888;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
   text-align: center;
-  font-family: monospace;
-  font-size: 20px;
-  letter-spacing: 2px;
-  font-weight: bold;
-  height: 48px;             
-  box-sizing: border-box;   
 }
 
+.login-screen input {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-family: "Courier New", monospace;
+  font-size: 1rem;
+  letter-spacing: 4px;
+  padding: 10px 14px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.login-screen input:focus {
+  border-color: #2ea84a;
+}
 
 .login-screen input::placeholder {
-  color: #4b7c5a;
+  color: #333;
+  letter-spacing: 2px;
 }
 
-/* BUTTON */
 .login-btn {
-  background: linear-gradient(to right, #00ff99, #00aa55);
+  background: #2ea84a;
   border: none;
-  border-radius: 16px;
-  padding: 12px;
+  color: #fff;
+  font-family: "Courier New", monospace;
+  font-size: 0.9rem;
   font-weight: bold;
+  letter-spacing: 3px;
+  padding: 14px;
   cursor: pointer;
-  font-size: 18px;
-  box-shadow: 0 0 12px #00ff99;
+  transition: background 0.2s;
+}
+
+.login-btn:hover {
+  background: #27923f;
 }

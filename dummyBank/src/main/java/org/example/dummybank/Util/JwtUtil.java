@@ -21,22 +21,16 @@ public class JwtUtil {
     public boolean validateToken(
             String token
     ){
-
         try {
-
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-
             return true;
-
         } catch (Exception e){
             return false;
         }
     }
-
-    // ADD THIS METHOD
     public Claims validateAndExtract(
             String token
     ){
@@ -46,7 +40,6 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
     public String getSubject(
             String token
     ){
